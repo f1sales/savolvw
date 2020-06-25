@@ -32,7 +32,7 @@ module Savolvw
 
         {
           source: {
-            name: F1SalesCustom::Email::Source.all[0][:name],
+            name: F1SalesCustom::Email::Source.all[1][:name],
           },
           customer: {
             name: parsed_email['nome'],
@@ -47,7 +47,7 @@ module Savolvw
 
         {
           source: {
-            name: F1SalesCustom::Email::Source.all[1][:name],
+            name: F1SalesCustom::Email::Source.all[0][:name],
           },
           customer: {
             name: parsed_email['Nome'],

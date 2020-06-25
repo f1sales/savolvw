@@ -17,7 +17,7 @@ RSpec.describe F1SalesCustom::Email::Parser do
     let(:parsed_email) { described_class.new(email).parse }
 
     it 'contains lead website a source name' do
-      expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all[0][:name])
+      expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all[1][:name])
     end
 
     it 'contains name' do
@@ -55,7 +55,7 @@ RSpec.describe F1SalesCustom::Email::Parser do
     let(:parsed_email) { described_class.new(email).parse }
 
     it 'contains lead website a source name' do
-      expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all[1][:name])
+      expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all[0][:name])
     end
 
     it 'contains name' do
