@@ -2,6 +2,7 @@ require "savolvw/version"
 
 require "f1sales_custom/parser"
 require "f1sales_custom/source"
+require "f1sales_custom/hooks"
 require "f1sales_helpers"
 require 'json'
 
@@ -58,6 +59,19 @@ module Savolvw
           message: parsed_email['Descricao'],
           description: "Preço #{parsed_email['Preço']}",
         }
+      end
+    end
+  end
+
+  class F1SalesCustom::Hooks::Lead
+    def self.switch_source(lead)
+      product_name = lead.product ? lead.product.name : ''
+      source_name = lead.source ? lead.source.name : ''
+
+      if product_name == 'PcD - Outubro21'
+        "#{source_name} - #{product_name}"
+      else
+        lead.source.name
       end
     end
   end
