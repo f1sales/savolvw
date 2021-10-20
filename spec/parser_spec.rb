@@ -1,18 +1,17 @@
 require 'ostruct'
-require "f1sales_custom/parser"
-require "f1sales_custom/source"
+require 'f1sales_custom/parser'
+require 'f1sales_custom/source'
 
 RSpec.describe F1SalesCustom::Email::Parser do
-
   context 'when is a different template' do
-    let(:email){
+    let(:email) do
       email = OpenStruct.new
-      email.to = [email: 'website@savolkia.f1sales.org'],
-      email.subject = 'OKM - Stinger',
+      email.to = [email: 'website@savolkia.f1sales.org']
+      email.subject = 'OKM - Stinger'
       email.body = "Veículo: StingerNome: Marcio KlepaczE-mail: marcioklepacz@gmail.comCPF: 276.386.810-02Telefone: 11981587311Mensagem: Teste lead"
 
       email
-    }
+    end
 
     let(:parsed_email) { described_class.new(email).parse }
 
@@ -43,14 +42,14 @@ RSpec.describe F1SalesCustom::Email::Parser do
   end
 
   context 'when is from website to SBC' do
-    let(:email){
+    let(:email) do
       email = OpenStruct.new
-      email.to = [email: 'website@savolkia.f1sales.org'],
-      email.subject = 'Oferta / Estoque - Proposta',
+      email.to = [email: 'website@savolkia.f1sales.org']
+      email.subject = 'Oferta / Estoque - Proposta'
       email.body = "!@\#{\n\"CidadeRevenda\":\"Savol Kia (São Bernardo do Campo)\",\n\"Veículo\":\"Sportage \",\n\"Placa\":\"OLL8751\",\n\"Preço\":\"R$ 69.900,00\",\n\"Nome\": \"Guilherme\",\n\"E-mail\": \"guilima@me.com\",\n\"Telefone\": 11998108688,\n\"Descricao\": \"Olá tenho Kia Cerato 2017 e tenho interesse na troca.\"\n}!@#"
 
       email
-    }
+    end
 
     let(:parsed_email) { described_class.new(email).parse }
 
@@ -81,6 +80,5 @@ RSpec.describe F1SalesCustom::Email::Parser do
     it 'contains description' do
       expect(parsed_email[:description]).to eq('Preço R$ 69.900,00')
     end
-
   end
 end

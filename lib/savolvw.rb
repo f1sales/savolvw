@@ -1,9 +1,8 @@
-require "savolvw/version"
-
-require "f1sales_custom/parser"
-require "f1sales_custom/source"
-require "f1sales_custom/hooks"
-require "f1sales_helpers"
+require 'savolvw/version'
+require 'f1sales_custom/parser'
+require 'f1sales_custom/source'
+require 'f1sales_custom/hooks'
+require 'f1sales_helpers'
 require 'json'
 
 module Savolvw
@@ -19,7 +18,7 @@ module Savolvw
         {
           email_id: 'website',
           name: 'Website - Novos'
-        },
+        }
       ]
     end
   end
@@ -33,31 +32,31 @@ module Savolvw
 
         {
           source: {
-            name: F1SalesCustom::Email::Source.all[1][:name],
+            name: F1SalesCustom::Email::Source.all[1][:name]
           },
           customer: {
             name: parsed_email['nome'],
             phone: parsed_email['telefone'],
-            email: parsed_email['email'],
+            email: parsed_email['email']
           },
           product: @email.subject,
           message: parsed_email['mensagem'],
-          description: "",
+          description: ""
         }
       else
 
         {
           source: {
-            name: F1SalesCustom::Email::Source.all[0][:name],
+            name: F1SalesCustom::Email::Source.all[0][:name]
           },
           customer: {
             name: parsed_email['Nome'],
             phone: parsed_email['Telefone'].to_s,
-            email: parsed_email['E-mail'],
+            email: parsed_email['E-mail']
           },
           product: "#{parsed_email['Veículo'].strip} #{parsed_email['Placa']}",
           message: parsed_email['Descricao'],
-          description: "Preço #{parsed_email['Preço']}",
+          description: "Preço #{parsed_email['Preço']}"
         }
       end
     end
