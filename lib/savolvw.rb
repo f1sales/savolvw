@@ -67,8 +67,8 @@ module Savolvw
       product_name = lead.product ? lead.product.name : ''
       source_name = lead.source ? lead.source.name : ''
 
-      if product_name == 'PcD - Outubro21'
-        "#{source_name} - #{product_name}"
+      if product_name.downcase.include?('pcd')
+        "#{source_name} - PCD"
       else
         lead.source.name
       end

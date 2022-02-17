@@ -11,7 +11,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
 
     let(:product) do
       product = OpenStruct.new
-      product.name = 'PcD - Outubro21'
+      product.name = 'PcD'
 
       product
     end
@@ -25,7 +25,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     it 'returns source name' do
-      expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - PcD - Outubro21')
+      expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - PCD')
     end
   end
 end
