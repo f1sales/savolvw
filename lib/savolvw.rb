@@ -64,11 +64,13 @@ module Savolvw
 
   class F1SalesCustom::Hooks::Lead
     def self.switch_source(lead)
-      product_name = lead.product ? lead.product.name : ''
+      product_name = lead.product ? lead.product.name.downcase : ''
       source_name = lead.source ? lead.source.name : ''
 
-      if product_name.downcase.include?('pcd')
+      if product_name.include?('pcd')
         "#{source_name} - PCD"
+      elsif product_name.include?('saveiro')
+        "#{source_name} - Saveiro"
       else
         lead.source.name
       end
