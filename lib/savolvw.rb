@@ -54,7 +54,7 @@ module Savolvw
             phone: parsed_email['Telefone'].to_s,
             email: parsed_email['E-mail']
           },
-          product: "#{parsed_email['Veículo'].strip} #{parsed_email['Placa']}",
+          product: { name: "#{parsed_email['Veículo'].strip} #{parsed_email['Placa']}" },
           message: parsed_email['Descricao'],
           description: "Preço #{parsed_email['Preço']}"
         }
