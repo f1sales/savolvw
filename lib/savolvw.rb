@@ -64,7 +64,7 @@ module Savolvw
 
   class F1SalesCustom::Hooks::Lead
     def self.switch_source(lead)
-      product_name = lead.product ? lead.product.name.downcase : ''
+      product_name = lead.product ? lead.product.name : ''
       source_name = lead.source ? lead.source.name : ''
 
       if product_name.include?('pcd')
