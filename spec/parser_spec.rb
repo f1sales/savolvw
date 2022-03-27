@@ -36,7 +36,7 @@ RSpec.describe F1SalesCustom::Email::Parser do
     end
 
     it 'contains product' do
-      expect(parsed_email[:product]).to eq('OKM - Stinger')
+      expect(parsed_email[:product][:name]).to eq('OKM - Stinger')
     end
 
   end
@@ -74,7 +74,7 @@ RSpec.describe F1SalesCustom::Email::Parser do
     end
 
     it 'contains product' do
-      expect(parsed_email[:product]).to eq('Sportage OLL8751')
+      expect(parsed_email[:product][:name]).to eq('Sportage OLL8751')
     end
 
     it 'contains description' do

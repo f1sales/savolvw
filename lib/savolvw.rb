@@ -39,7 +39,9 @@ module Savolvw
             phone: parsed_email['telefone'],
             email: parsed_email['email']
           },
-          product: @email.subject,
+          product: {
+            name: @email.subject
+          },
           message: parsed_email['mensagem'],
           description: ""
         }
@@ -67,10 +69,8 @@ module Savolvw
       product_name = lead.product ? lead.product.name : ''
       source_name = lead.source ? lead.source.name : ''
 
-      if product_name.include?('pcd')
+      if product_name.downcase.include?('pcd')
         "#{source_name} - PCD"
-      elsif product_name.include?('saveiro')
-        "#{source_name} - Saveiro"
       else
         lead.source.name
       end
