@@ -68,9 +68,12 @@ module Savolvw
     def self.switch_source(lead)
       product_name = lead.product ? lead.product.name : ''
       source_name = lead.source ? lead.source.name : ''
+      product_name_downcase = product_name.downcase
 
-      if product_name.downcase.include?('pcd')
+      if product_name_downcase.include?('pcd')
         "#{source_name} - PCD"
+      elsif product_name_downcase.include?('frotista')
+        "#{source_name} - Frotista"
       else
         lead.source.name
       end
