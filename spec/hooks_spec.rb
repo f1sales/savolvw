@@ -42,5 +42,31 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - Frotista')
       end
     end
+
+    context 'when product contains Pós-venda' do
+      let(:product) do
+        product = OpenStruct.new
+        product.name = 'Pós-venda: Pneu - Maio22 (Instagram)'
+
+        product
+      end
+
+      it 'returns source name' do
+        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - Pós Vendas')
+      end
+    end
+
+    context 'when product is common' do
+      let(:product) do
+        product = OpenStruct.new
+        product.name = 'Pneu - Maio22 (Instagram)'
+
+        product
+      end
+
+      it 'returns source name' do
+        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen')
+      end
+    end
   end
 end

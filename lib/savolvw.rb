@@ -74,6 +74,8 @@ module Savolvw
         "#{source_name} - PCD"
       elsif product_name_downcase.include?('frotista')
         "#{source_name} - Frotista"
+      elsif product_name_downcase.include?('pós-venda')
+        "#{source_name} - Pós Vendas"
       else
         lead.source.name
       end
