@@ -2,7 +2,7 @@ require 'ostruct'
 require 'byebug'
 
 RSpec.describe F1SalesCustom::Hooks::Lead do
-  context 'when product cotains PCD' do
+  context 'when product cotains information' do
     let(:source) do
       source = OpenStruct.new
       source.name = 'Facebook - Savol Volkswagen'
@@ -15,6 +15,19 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       lead.product = product
 
       lead
+    end
+
+    let(:product) do
+      product = OpenStruct.new
+      product.name = 'Pneu - Maio22 (Instagram)'
+
+      product
+    end
+
+    context 'when product is common' do
+      it 'returns source name' do
+        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen')
+      end
     end
 
     context 'when product contains PcD' do
@@ -66,19 +79,6 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       
       it 'return source name with RE9' do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - RE9')
-      end
-    end
-
-    context 'when product is common' do
-      let(:product) do
-        product = OpenStruct.new
-        product.name = 'Pneu - Maio22 (Instagram)'
-
-        product
-      end
-
-      it 'returns source name' do
-        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen')
       end
     end
   end
