@@ -42,5 +42,18 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - Frotista')
       end
     end
+
+    context 'when product contains Frotista' do
+      let(:product) do
+        product = OpenStruct.new
+        product.name = 'RE9 T-Cross Sense Vídeo - Maio22 (Facebook)'
+
+        product
+      end
+
+      it 'returns source name' do
+        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - RE9')
+      end
+    end
   end
 end
