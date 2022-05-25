@@ -4,6 +4,7 @@ require 'f1sales_custom/source'
 require 'f1sales_custom/hooks'
 require 'f1sales_helpers'
 require 'json'
+require 'byebug'
 
 module Savolvw
   class Error < StandardError; end
@@ -28,22 +29,23 @@ module Savolvw
       parsed_email = JSON.parse(@email.body.gsub('!@#', '')) rescue nil
 
       if parsed_email.nil?
-        parsed_email = @email.body.colons_to_hash(/(Telefone|Nome|Mensagem|E-mail|CPF).*?:/, false) unless parsed_email
+        parsed_email = @email.body.colons_to_hash(/(Telefone|Nome|Mensagem|E-mail|CPF|Campanha|Origem|ATENÇÃO).*?:/, false)
+        source_name = parsed_email['origem'] ? parsed_email['origem'] : F1SalesCustom::Email::Source.all[1][:name]
 
         {
           source: {
-            name: F1SalesCustom::Email::Source.all[1][:name]
+            name: source_name
           },
           customer: {
             name: parsed_email['nome'],
-            phone: parsed_email['telefone'],
+            phone: parsed_email['telefone'].gsub(/[^0-9]/, ''),
             email: parsed_email['email']
           },
           product: {
             name: @email.subject
           },
           message: parsed_email['mensagem'],
-          description: ""
+          description: "#{parsed_email['campanha']}"
         }
       else
 
@@ -79,7 +81,7 @@ module Savolvw
       elsif product_name_downcase.include?('re9')
         "#{source_name} - RE9"
       else
-        lead.source.name
+        source_name
       end
     end
   end
