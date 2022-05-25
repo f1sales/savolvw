@@ -6,6 +6,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     let(:source) do
       source = OpenStruct.new
       source.name = 'Facebook - Savol Volkswagen'
+
       source
     end
 
@@ -79,6 +80,43 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       
       it 'return source name with RE9' do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - RE9')
+      end
+    end
+  end
+
+  context 'when leads come from Landing Page' do
+    let(:lead) do
+      lead = OpenStruct.new
+      lead.source = source
+      lead.description = 'Campanha Kinto - SBC - Yaris'
+
+      lead
+    end
+
+    let(:source) do
+      source = OpenStruct.new
+      source.name = 'Facebook'
+
+      source
+    end
+
+    it 'when lead come to SBC' do
+      expect(described_class.switch_source(lead)).to eq('Facebook - SBC')
+    end
+
+    context 'when leads come to Praia Grande' do
+      before { lead.description = 'Campanha Kinto - Praia Grande - Yaris' }
+
+      it 'when come to Praia Grande' do
+        expect(described_class.switch_source(lead)).to eq('Facebook - Praia Grande')
+      end
+    end
+
+    context 'when leads come to Santo André' do
+      before { lead.description = 'Campanha Kinto - Santo André - Yaris' }
+
+      it 'when come to Santo André' do
+        expect(described_class.switch_source(lead)).to eq('Facebook - Santo André')
       end
     end
   end

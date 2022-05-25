@@ -81,4 +81,39 @@ RSpec.describe F1SalesCustom::Email::Parser do
       expect(parsed_email[:description]).to eq('Preço R$ 69.900,00')
     end
   end
+
+  context 'when lead come from a Landing Page' do
+    context 'when is to SBC' do
+      let(:email) do
+        email = OpenStruct.new
+        email.to = [email: 'teste@lojateste.f1sales.net']
+        email.subject = 'Notificação de contato sobre oferta'
+        email.body = "INFORMAÇÕES DE CONTATO\n\n\n* Campanha:* Campanha Kinto - SBC - Yaris\n* Origem: * Facebook\n\n\n* Nome:* Teste F1 – nathanael\n* E-mail: * ads@ange360.com\n* Telefone: * +5511982582021\n\n\n\n\nATENÇÃO: Não responda este e-mail. Trata-se de uma mensagem informativa e\nautomática.\n\nAtenciosamente,\n<http://www.ange360.com.br>\n\nNada nesta mensagem tem a intenção de ser uma assinatura eletrônica a menos\nque uma declaração específica do contrário seja incluída.\nConfidencialidade: Esta mensagem é destinada somente à pessoa endereçada.\nPode conter material confidencial e/ou privilegiado. Qualquer revisão,\ntransmissão ou outro uso ou ação tomada por confiança é proibida e pode ser\nilegal. Se você recebeu esta mensagem por engano, entre em contato com o\nremetente e apague-a de seu computador."
+  
+        email
+      end
+
+      let(:parsed_email) { described_class.new(email).parse }
+
+      it 'contains name' do
+        expect(parsed_email[:customer][:name]).to eq('Teste F1 – nathanael')
+      end
+
+      it 'contains email' do
+        expect(parsed_email[:customer][:email]).to eq('ads@ange360.com')
+      end
+
+      it 'contains phone' do
+        expect(parsed_email[:customer][:phone]).to eq('5511982582021')
+      end
+
+      it 'contains source name' do
+        expect(parsed_email[:source][:name]).to eq('Facebook')
+      end
+
+      it 'contains description' do
+        expect(parsed_email[:description]).to eq('Campanha Kinto - SBC - Yaris')
+      end
+    end
+  end
 end
