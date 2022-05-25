@@ -71,6 +71,7 @@ module Savolvw
       product_name = lead.product ? lead.product.name : ''
       source_name = lead.source ? lead.source.name : ''
       product_name_downcase = product_name.downcase
+      description = lead.description ? lead.description.downcase : ''
 
       if product_name_downcase.include?('pcd')
         "#{source_name} - PCD"
@@ -80,6 +81,12 @@ module Savolvw
         "#{source_name} - Pós Vendas"
       elsif product_name_downcase.include?('re9')
         "#{source_name} - RE9"
+      elsif description.include?('sbc')
+        "#{source_name} - SBC"
+      elsif description.include?('praia grande')
+        "#{source_name} - Praia Grande"
+      elsif description.include?('santo andré')
+        "#{source_name} - Santo André"
       else
         source_name
       end
