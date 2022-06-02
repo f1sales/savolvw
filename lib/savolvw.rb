@@ -71,8 +71,19 @@ module Savolvw
       source_name = lead.source ? lead.source.name : ''
       product_name_downcase = product_name.downcase
       description = lead.description ? lead.description.downcase : ''
+      message = lead.message ? lead.message.downcase : ''
 
-      if product_name_downcase.include?('pcd')
+      if source_name.downcase.include?('rd station')
+        if message.include?('sa')
+         "#{source_name} - Santo André"
+        elsif message.include?('pg')
+         "#{source_name} - Praia Grande"
+        elsif message.include?('sbc')
+          "#{source_name} - SBC"
+        else
+          "#{source_name}"
+        end
+      elsif product_name_downcase.include?('pcd')
         "#{source_name} - PCD"
       elsif product_name_downcase.include?('frotista')
         "#{source_name} - Frotista"

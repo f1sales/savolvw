@@ -119,4 +119,49 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       end
     end
   end
+
+  context 'when leads come from RD Station' do
+    let(:lead) do
+      lead = OpenStruct.new
+      lead.source = source
+      lead.message = 'SA'
+
+      lead
+    end
+
+    let(:source) do
+      source = OpenStruct.new
+      source.name = 'RD Station'
+
+      source
+    end
+
+    it 'Lead go to Santo Amaro' do
+      expect(described_class.switch_source(lead)).to eq('RD Station - Santo André')
+    end
+
+    context 'when leads has PG in the message' do
+      before { lead.message = 'PG' }
+
+      it 'goes to Praia Grande' do
+        expect(described_class.switch_source(lead)).to eq('RD Station - Praia Grande')
+      end
+    end
+
+    context 'when leads has SBC in the message' do
+      before { lead.message = 'SBC' }
+      
+      it 'goes to SBC' do
+        expect(described_class.switch_source(lead)).to eq('RD Station - SBC')
+      end
+    end
+
+    context 'when leads message come empty' do
+      before { lead.message = '' }
+      
+      it 'return source name' do
+        expect(described_class.switch_source(lead)).to eq('RD Station')
+      end
+    end
+  end
 end
