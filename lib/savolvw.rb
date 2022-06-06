@@ -91,6 +91,10 @@ module Savolvw
         "#{source_name} - Pós Vendas"
       elsif product_name_downcase.include?('re9')
         "#{source_name} - RE9"
+      elsif product_name_downcase.include?('kinto')
+        "#{source_name} - KINTO"
+      elsif product_name_downcase.include?('flua')
+        "#{source_name} - FLUA"
       elsif description.include?('sbc')
         "#{source_name} - SBC"
       elsif description.include?('praia grande')

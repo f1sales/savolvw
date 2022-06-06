@@ -31,11 +31,8 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     context 'when product contains PcD' do
-      let(:product) do
-        product = OpenStruct.new
+      before do
         product.name = 'PcD'
-
-        product
       end
 
       it 'returns source name' do
@@ -44,11 +41,8 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     context 'when product contains Frotista' do
-      let(:product) do
-        product = OpenStruct.new
+      before do
         product.name = 'Frotista'
-
-        product
       end
 
       it 'returns source name' do
@@ -57,11 +51,8 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     context 'when product contains Pós-venda' do
-      let(:product) do
-        product = OpenStruct.new
+      before do
         product.name = 'Pós-venda: Pneu - Maio22 (Instagram)'
-        
-        product
       end
       
       it 'returns source name' do
@@ -70,15 +61,32 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
       
     context 'when product contains RE9' do
-      let(:product) do
-        product = OpenStruct.new
+      before do
         product.name = 'RE9 T-Cross Sense Vídeo - Maio22 (Facebook)'
-
-        product
       end
       
       it 'return source name with RE9' do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - RE9')
+      end
+    end
+
+    context 'when product contains KINTO' do
+      before do
+        product.name = 'KINTO'
+      end
+
+      it 'return source name with KINTO' do
+        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - KINTO')
+      end
+    end
+
+    context 'when product contains FLUA' do
+      before do
+        product.name = 'FLUA'
+      end
+
+      it 'return source name with FLUA' do
+        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - FLUA')
       end
     end
   end
