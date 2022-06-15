@@ -149,18 +149,52 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     context 'when leads has PG in the message' do
-      before { lead.message = 'PG' }
+      context 'when current store is savoltoyotapraia' do
+        before do 
+          lead.message = 'PG'
+          stub_const('ENV', 'STORE_ID' => 'savoltoyotapraia')
+        end
 
-      it 'goes to Praia Grande' do
-        expect(described_class.switch_source(lead)).to eq('RD Station - Praia Grande')
+        it 'goes to Praia Grande' do
+          expect(described_class.switch_source(lead)).to eq('RD Station - Praia Grande')
+        end
+      end
+
+      context "when is not savol toyota praia " do
+        before do 
+          lead.message = 'PG'
+          stub_const('ENV', 'STORE_ID' => 'savoltoyota')
+        end
+
+        it 'returns nil' do
+          expect(described_class.switch_source(lead)).to be_nil
+        end
       end
     end
 
     context 'when leads has SBC in the message' do
-      before { lead.message = 'SBC' }
+
+      context 'when store id is savolpraia' do
+        before do 
+          lead.message = 'SBC'
+          stub_const('ENV', 'STORE_ID' => 'savoltoyotapraia')
+        end
+
+        it 'returns nil' do
+          expect(described_class.switch_source(lead)).to be_nil
+        end
+      end
+
+      context 'when store id is savoltoyota' do
       
-      it 'goes to SBC' do
-        expect(described_class.switch_source(lead)).to eq('RD Station - SBC')
+        before do 
+          lead.message = 'SBC'
+          stub_const('ENV', 'STORE_ID' => 'savoltoyota')
+        end
+        
+        it 'goes to SBC' do
+          expect(described_class.switch_source(lead)).to eq('RD Station - SBC')
+        end
       end
     end
 

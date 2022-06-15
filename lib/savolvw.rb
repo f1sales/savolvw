@@ -77,8 +77,12 @@ module Savolvw
         if message.include?('sa')
          "#{source_name} - Santo André"
         elsif message.include?('pg')
+          return if ENV['STORE_ID'] != 'savoltoyotapraia'
+
          "#{source_name} - Praia Grande"
         elsif message.include?('sbc')
+          return if ENV['STORE_ID'] != 'savoltoyota'
+
           "#{source_name} - SBC"
         else
           "#{source_name}"
