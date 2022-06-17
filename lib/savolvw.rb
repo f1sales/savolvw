@@ -75,11 +75,13 @@ module Savolvw
 
       if source_name.downcase.include?('rd station')
         if message.include?('sa')
-         "#{source_name} - Santo André"
+          return if ENV['STORE_ID'] != 'savoltoyota'
+
+          "#{source_name} - Santo André"
         elsif message.include?('pg')
           return if ENV['STORE_ID'] != 'savoltoyotapraia'
 
-         "#{source_name} - Praia Grande"
+          "#{source_name} - Praia Grande"
         elsif message.include?('sbc')
           return if ENV['STORE_ID'] != 'savoltoyota'
 
