@@ -75,11 +75,13 @@ module Savolvw
 
       if source_name.downcase.include?('rd station')
         if message.include?('sa')
-         "#{source_name} - Santo André"
+          return if ENV['STORE_ID'] != 'savoltoyota'
+
+          "#{source_name} - Santo André"
         elsif message.include?('pg')
           return if ENV['STORE_ID'] != 'savoltoyotapraia'
 
-         "#{source_name} - Praia Grande"
+          "#{source_name} - Praia Grande"
         elsif message.include?('sbc')
           return if ENV['STORE_ID'] != 'savoltoyota'
 
@@ -111,3 +113,26 @@ module Savolvw
     end
   end
 end
+
+
+# curl -X POST "https://savoltoyotapraia.f1sales.org/public/api/v1/leads"\
+#   -H "Content-Type: application/json"\
+#   -H "accept: application/json"\
+#   -d "
+#   {
+#     \"lead\":{
+#       \"customer\":{
+#         \"name\":\"Darth Vader\",
+#         \"phone\":\"11989889988\",
+#         \"email\":\"darthvader@deathstar.com\"
+#       },
+#       \"product\":{
+#         \"name\":\"Tie Fighter\"
+#       },
+#       \"source\":{
+#         \"name\":\"RD Station - Oportunidades\"
+#       },
+#       \"message\":\"Tags: . Loja: SBC\",
+#       \"description\":\"Clicked on header banner\"
+#     }
+#   }"

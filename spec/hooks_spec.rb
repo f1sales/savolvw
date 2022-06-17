@@ -144,8 +144,26 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       source
     end
 
-    it 'Lead go to Santo Amaro' do
-      expect(described_class.switch_source(lead)).to eq('RD Station - Santo André')
+    context 'when leads has SA in the message' do
+      context 'when store id is savolpraia' do
+        before do
+          stub_const('ENV', 'STORE_ID' => 'savoltoyotapraia')
+        end
+
+        it 'returns nil' do
+          expect(described_class.switch_source(lead)).to be_nil
+        end
+      end
+
+      context 'when store id is savoltoyota' do
+        before do
+          stub_const('ENV', 'STORE_ID' => 'savoltoyota')
+        end
+        
+        it 'goes to SBC' do
+          expect(described_class.switch_source(lead)).to eq('RD Station - Santo André')
+        end
+      end
     end
 
     context 'when leads has PG in the message' do
@@ -173,7 +191,6 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     context 'when leads has SBC in the message' do
-
       context 'when store id is savolpraia' do
         before do 
           lead.message = 'SBC'
