@@ -113,26 +113,3 @@ module Savolvw
     end
   end
 end
-
-
-# curl -X POST "https://savoltoyotapraia.f1sales.org/public/api/v1/leads"\
-#   -H "Content-Type: application/json"\
-#   -H "accept: application/json"\
-#   -d "
-#   {
-#     \"lead\":{
-#       \"customer\":{
-#         \"name\":\"Darth Vader\",
-#         \"phone\":\"11989889988\",
-#         \"email\":\"darthvader@deathstar.com\"
-#       },
-#       \"product\":{
-#         \"name\":\"Tie Fighter\"
-#       },
-#       \"source\":{
-#         \"name\":\"RD Station - Oportunidades\"
-#       },
-#       \"message\":\"Tags: . Loja: SBC\",
-#       \"description\":\"Clicked on header banner\"
-#     }
-#   }"
