@@ -107,6 +107,8 @@ module Savolvw
         "#{source_name} - Praia Grande"
       elsif description.include?('santo andré')
         "#{source_name} - Santo André"
+      elsif product_name_downcase.include?('frota')
+        "#{source_name} - Frota"
       else
         source_name
       end

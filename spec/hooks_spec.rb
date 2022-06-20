@@ -89,6 +89,16 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - FLUA')
       end
     end
+
+    context 'when product contains Frota' do
+      before do
+        product.name = 'Frota - Vídeo'
+      end
+
+      it 'return source name with FLUA' do
+        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - Frota')
+      end
+    end
   end
 
   context 'when leads come from Landing Page' do
