@@ -74,20 +74,20 @@ module Savolvw
       message = lead.message ? lead.message.downcase : ''
 
       if source_name.downcase.include?('rd station')
-        if message.include?('sa')
+        if message.include?('loja: sa')
           return if ENV['STORE_ID'] != 'savoltoyota'
 
           "#{source_name} - Santo André"
-        elsif message.include?('pg')
+        elsif message.include?('loja: pg')
           return if ENV['STORE_ID'] != 'savoltoyotapraia'
 
           "#{source_name} - Praia Grande"
-        elsif message.include?('sbc')
+        elsif message.include?('loja: sbc')
           return if ENV['STORE_ID'] != 'savoltoyota'
 
           "#{source_name} - SBC"
         else
-          "#{source_name}"
+          source_name
         end
       elsif product_name_downcase.include?('pcd')
         "#{source_name} - PCD"
