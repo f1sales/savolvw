@@ -54,17 +54,17 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       before do
         product.name = 'Pós-venda: Pneu - Maio22 (Instagram)'
       end
-      
+
       it 'returns source name' do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - Pós Vendas')
       end
     end
-      
+
     context 'when product contains RE9' do
       before do
         product.name = 'RE9 T-Cross Sense Vídeo - Maio22 (Facebook)'
       end
-      
+
       it 'return source name with RE9' do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - RE9')
       end
@@ -142,7 +142,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     let(:lead) do
       lead = OpenStruct.new
       lead.source = source
-      lead.message = 'SA'
+      lead.message = 'Tags: . Loja: SA'
 
       lead
     end
@@ -169,8 +169,8 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
         before do
           stub_const('ENV', 'STORE_ID' => 'savoltoyota')
         end
-        
-        it 'goes to SBC' do
+
+        it 'goes to Santo André' do
           expect(described_class.switch_source(lead)).to eq('RD Station - Santo André')
         end
       end
@@ -178,8 +178,8 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
 
     context 'when leads has PG in the message' do
       context 'when current store is savoltoyotapraia' do
-        before do 
-          lead.message = 'PG'
+        before do
+          lead.message = 'Tags: . Loja: PG. Campanha: savol-pg. Produto: feed-grs-junina. Origem: facebook'
           stub_const('ENV', 'STORE_ID' => 'savoltoyotapraia')
         end
 
@@ -189,8 +189,8 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       end
 
       context "when is not savol toyota praia " do
-        before do 
-          lead.message = 'PG'
+        before do
+          lead.message = 'Tags: . Loja: PG. Campanha: savol-pg. Produto: feed-grs-junina. Origem: facebook'
           stub_const('ENV', 'STORE_ID' => 'savoltoyota')
         end
 
@@ -202,8 +202,8 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
 
     context 'when leads has SBC in the message' do
       context 'when store id is savolpraia' do
-        before do 
-          lead.message = 'SBC'
+        before do
+          lead.message = 'Tags: . Loja: SBC. Campanha: savol-sbc. Produto: feed-grs-junina. Origem: facebook'
           stub_const('ENV', 'STORE_ID' => 'savoltoyotapraia')
         end
 
@@ -213,12 +213,11 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       end
 
       context 'when store id is savoltoyota' do
-      
-        before do 
-          lead.message = 'SBC'
+        before do
+          lead.message = 'Tags: . Loja: SBC. Campanha: savol-sbc. Produto: feed-grs-junina. Origem: facebook'
           stub_const('ENV', 'STORE_ID' => 'savoltoyota')
         end
-        
+
         it 'goes to SBC' do
           expect(described_class.switch_source(lead)).to eq('RD Station - SBC')
         end
@@ -227,7 +226,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
 
     context 'when leads message come empty' do
       before { lead.message = '' }
-      
+
       it 'return source name' do
         expect(described_class.switch_source(lead)).to eq('RD Station')
       end
