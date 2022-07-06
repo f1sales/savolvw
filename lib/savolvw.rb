@@ -4,7 +4,6 @@ require 'f1sales_custom/source'
 require 'f1sales_custom/hooks'
 require 'f1sales_helpers'
 require 'json'
-require 'byebug'
 
 module Savolvw
   class Error < StandardError; end
