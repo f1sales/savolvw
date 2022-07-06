@@ -4,6 +4,7 @@ require 'f1sales_custom/source'
 require 'f1sales_custom/hooks'
 require 'f1sales_helpers'
 require 'json'
+require 'byebug'
 
 module Savolvw
   class Error < StandardError; end
@@ -29,7 +30,7 @@ module Savolvw
 
       if parsed_email.nil?
         parsed_email = @email.body.colons_to_hash(/(Telefone|Nome|Mensagem|E-mail|CPF|Campanha|Origem|ATENÇÃO).*?:/, false)
-        source_name = parsed_email['origem'] ? parsed_email['origem'] : F1SalesCustom::Email::Source.all[1][:name]
+        source_name = parsed_email['origem'] || F1SalesCustom::Email::Source.all[1][:name]
 
         {
           source: {
@@ -44,7 +45,7 @@ module Savolvw
             name: @email.subject
           },
           message: parsed_email['mensagem'],
-          description: "#{parsed_email['campanha']}"
+          description: parsed_email['campanha']
         }
       else
 
@@ -67,25 +68,29 @@ module Savolvw
 
   class F1SalesCustom::Hooks::Lead
     def self.switch_source(lead)
-      product_name = lead.product ? lead.product.name : ''
-      source_name = lead.source ? lead.source.name : ''
+      product_name = lead.product&.name || ''
+      source_name = lead.source&.name || ''
       product_name_downcase = product_name.downcase
-      description = lead.description ? lead.description.downcase : ''
-      message = lead.message ? lead.message.downcase : ''
+      description = lead.description&.downcase || ''
+      message = lead.message&.downcase || ''
 
       if source_name.downcase.include?('rd station')
+        origin = message.colons_to_hash(/(tags|loja|origem|produto|campanha).*?:/, false)['origem']
+        origin_clean = origin&.gsub('.', '')&.capitalize
+        origin_end = origin_clean&.empty? ? '' : " - #{origin_clean}"
+
         if message.include?('loja: sa')
           return if ENV['STORE_ID'] != 'savoltoyota'
 
-          "#{source_name} - Santo André"
+          "#{source_name} - Santo André" + origin_end
         elsif message.include?('loja: pg')
           return if ENV['STORE_ID'] != 'savoltoyotapraia'
 
-          "#{source_name} - Praia Grande"
+          "#{source_name} - Praia Grande" + origin_end
         elsif message.include?('loja: sbc')
           return if ENV['STORE_ID'] != 'savoltoyota'
 
-          "#{source_name} - SBC"
+          "#{source_name} - SBC" + origin_end
         else
           source_name
         end
