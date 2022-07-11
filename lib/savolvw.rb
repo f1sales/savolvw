@@ -29,11 +29,11 @@ module Savolvw
 
       if parsed_email.nil?
         parsed_email = @email.body.colons_to_hash(/(Telefone|Nome|Mensagem|E-mail|CPF|Campanha|Origem|ATENÇÃO).*?:/, false)
-        source_name = parsed_email['origem'] ? parsed_email['origem'] : F1SalesCustom::Email::Source.all[1][:name]
+        @source_name = parsed_email['origem'] || F1SalesCustom::Email::Source.all[1][:name]
 
         {
           source: {
-            name: source_name
+            name: @source_name
           },
           customer: {
             name: parsed_email['nome'],
@@ -44,7 +44,7 @@ module Savolvw
             name: @email.subject
           },
           message: parsed_email['mensagem'],
-          description: "#{parsed_email['campanha']}"
+          description: parsed_email['campanha']
         }
       else
 
@@ -66,51 +66,67 @@ module Savolvw
   end
 
   class F1SalesCustom::Hooks::Lead
-    def self.switch_source(lead)
-      product_name = lead.product ? lead.product.name : ''
-      source_name = lead.source ? lead.source.name : ''
-      product_name_downcase = product_name.downcase
-      description = lead.description ? lead.description.downcase : ''
-      message = lead.message ? lead.message.downcase : ''
+    class << self
+      def switch_source(lead)
+        product_name = lead.product&.name || ''
+        @source_name = lead.source&.name || ''
+        @product_name_downcase = product_name.downcase
+        @description = lead.description&.downcase || ''
+        @message = lead.message&.downcase || ''
+        add_team_to_source
+      end
 
-      if source_name.downcase.include?('rd station')
-        if message.include?('loja: sa')
+      def add_team_to_source
+        if @source_name.downcase.include?('rd station')
+          rd_station_origin
+        elsif @product_name_downcase.include?('pcd')
+          "#{@source_name} - PCD"
+        elsif @product_name_downcase.include?('frotista')
+          "#{@source_name} - Frotista"
+        elsif @product_name_downcase.include?('pós-venda')
+          "#{@source_name} - Pós Vendas"
+        elsif @product_name_downcase.include?('re9')
+          "#{@source_name} - RE9"
+        elsif @product_name_downcase.include?('kinto')
+          "#{@source_name} - KINTO"
+        elsif @product_name_downcase.include?('flua')
+          "#{@source_name} - FLUA"
+        elsif @description.include?('sbc')
+          "#{@source_name} - SBC"
+        elsif @description.include?('praia grande')
+          "#{@source_name} - Praia Grande"
+        elsif @description.include?('santo andré')
+          "#{@source_name} - Santo André"
+        elsif @product_name_downcase.include?('frota')
+          "#{@source_name} - Frota"
+        else
+          @source_name
+        end
+      end
+
+      def rd_station_origin
+        origin = @message.colons_to_hash(/(tags|loja|origem|produto|campanha).*?:/, false)['origem']
+        origin_clean = origin&.gsub('.', '')&.capitalize
+        @origin_end = origin_clean&.empty? ? '' : " - #{origin_clean}"
+        choose_the_store
+      end
+
+      def choose_the_store
+        if @message.include?('loja: sa')
           return if ENV['STORE_ID'] != 'savoltoyota'
 
-          "#{source_name} - Santo André"
-        elsif message.include?('loja: pg')
+          "#{@source_name} - Santo André" + @origin_end
+        elsif @message.include?('loja: pg')
           return if ENV['STORE_ID'] != 'savoltoyotapraia'
 
-          "#{source_name} - Praia Grande"
-        elsif message.include?('loja: sbc')
+          "#{@source_name} - Praia Grande" + @origin_end
+        elsif @message.include?('loja: sbc')
           return if ENV['STORE_ID'] != 'savoltoyota'
 
-          "#{source_name} - SBC"
+          "#{@source_name} - SBC" + @origin_end
         else
-          source_name
+          @source_name
         end
-      elsif product_name_downcase.include?('pcd')
-        "#{source_name} - PCD"
-      elsif product_name_downcase.include?('frotista')
-        "#{source_name} - Frotista"
-      elsif product_name_downcase.include?('pós-venda')
-        "#{source_name} - Pós Vendas"
-      elsif product_name_downcase.include?('re9')
-        "#{source_name} - RE9"
-      elsif product_name_downcase.include?('kinto')
-        "#{source_name} - KINTO"
-      elsif product_name_downcase.include?('flua')
-        "#{source_name} - FLUA"
-      elsif description.include?('sbc')
-        "#{source_name} - SBC"
-      elsif description.include?('praia grande')
-        "#{source_name} - Praia Grande"
-      elsif description.include?('santo andré')
-        "#{source_name} - Santo André"
-      elsif product_name_downcase.include?('frota')
-        "#{source_name} - Frota"
-      else
-        source_name
       end
     end
   end

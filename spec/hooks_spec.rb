@@ -142,7 +142,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     let(:lead) do
       lead = OpenStruct.new
       lead.source = source
-      lead.message = 'Tags: . Loja: SA'
+      lead.message = 'Tags: . Loja: SA. Produto: branding. Origem: google. Campanha: savol-sa'
 
       lead
     end
@@ -171,26 +171,26 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
         end
 
         it 'goes to Santo André' do
-          expect(described_class.switch_source(lead)).to eq('RD Station - Santo André')
+          expect(described_class.switch_source(lead)).to eq('RD Station - Santo André - Google')
         end
       end
     end
 
     context 'when leads has PG in the message' do
+      before { lead.message = 'Tags: . Loja: PG. Origem: facebook. Campanha: savol-pg. Produto: feed-grs-junina' }
+
       context 'when current store is savoltoyotapraia' do
         before do
-          lead.message = 'Tags: . Loja: PG. Campanha: savol-pg. Produto: feed-grs-junina. Origem: facebook'
           stub_const('ENV', 'STORE_ID' => 'savoltoyotapraia')
         end
 
         it 'goes to Praia Grande' do
-          expect(described_class.switch_source(lead)).to eq('RD Station - Praia Grande')
+          expect(described_class.switch_source(lead)).to eq('RD Station - Praia Grande - Facebook')
         end
       end
 
-      context "when is not savol toyota praia " do
+      context 'when is not savol toyota praia' do
         before do
-          lead.message = 'Tags: . Loja: PG. Campanha: savol-pg. Produto: feed-grs-junina. Origem: facebook'
           stub_const('ENV', 'STORE_ID' => 'savoltoyota')
         end
 
@@ -201,9 +201,10 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     context 'when leads has SBC in the message' do
+      before { lead.message = 'Tags: . Loja: SBC. Campanha: savol-sbc. Produto: feed-grs-junina. Origem: instagram' }
+
       context 'when store id is savolpraia' do
         before do
-          lead.message = 'Tags: . Loja: SBC. Campanha: savol-sbc. Produto: feed-grs-junina. Origem: facebook'
           stub_const('ENV', 'STORE_ID' => 'savoltoyotapraia')
         end
 
@@ -214,12 +215,19 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
 
       context 'when store id is savoltoyota' do
         before do
-          lead.message = 'Tags: . Loja: SBC. Campanha: savol-sbc. Produto: feed-grs-junina. Origem: facebook'
           stub_const('ENV', 'STORE_ID' => 'savoltoyota')
         end
 
         it 'goes to SBC' do
-          expect(described_class.switch_source(lead)).to eq('RD Station - SBC')
+          expect(described_class.switch_source(lead)).to eq('RD Station - SBC - Instagram')
+        end
+
+        context 'when message does not have origin in source' do
+          before { lead.message = 'Tags: . Loja: SBC. Campanha: savol-sbc. Produto: feed-grs-junina. Origem: ' }
+
+          it 'source doesnt have origin' do
+            expect(described_class.switch_source(lead)).to eq('RD Station - SBC')
+          end
         end
       end
     end
