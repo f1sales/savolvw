@@ -79,25 +79,25 @@ module Savolvw
       def add_team_to_source
         if @source_name.downcase.include?('rd station')
           rd_station_origin
-        elsif @product_name_downcase.include?('pcd')
+        elsif @product_name_downcase['pcd']
           "#{@source_name} - PCD"
-        elsif @product_name_downcase.include?('frotista')
+        elsif @product_name_downcase['frotista']
           "#{@source_name} - Frotista"
-        elsif @product_name_downcase.include?('pós-venda')
+        elsif @product_name_downcase['pós-venda']
           "#{@source_name} - Pós Vendas"
-        elsif @product_name_downcase.include?('re9')
+        elsif @product_name_downcase['re9']
           "#{@source_name} - RE9"
-        elsif @product_name_downcase.include?('kinto')
+        elsif @product_name_downcase['kinto']
           "#{@source_name} - KINTO"
-        elsif @product_name_downcase.include?('flua')
+        elsif @product_name_downcase['flua']
           "#{@source_name} - FLUA"
-        elsif @description.include?('sbc')
+        elsif @description['sbc']
           "#{@source_name} - SBC"
-        elsif @description.include?('praia grande')
+        elsif @description['praia grande']
           "#{@source_name} - Praia Grande"
-        elsif @description.include?('santo andré')
+        elsif @description['santo andré']
           "#{@source_name} - Santo André"
-        elsif @product_name_downcase.include?('frota')
+        elsif @product_name_downcase['frota'] || @product_name_downcase['saveiro - cnpj']
           "#{@source_name} - Frota"
         else
           @source_name

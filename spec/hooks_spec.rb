@@ -31,9 +31,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     context 'when product contains PcD' do
-      before do
-        product.name = 'PcD'
-      end
+      before { product.name = 'PcD' }
 
       it 'returns source name' do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - PCD')
@@ -41,9 +39,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     context 'when product contains Frotista' do
-      before do
-        product.name = 'Frotista'
-      end
+      before { product.name = 'Frotista' }
 
       it 'returns source name' do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - Frotista')
@@ -51,9 +47,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     context 'when product contains Pós-venda' do
-      before do
-        product.name = 'Pós-venda: Pneu - Maio22 (Instagram)'
-      end
+      before { product.name = 'Pós-venda: Pneu - Maio22 (Instagram)' }
 
       it 'returns source name' do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - Pós Vendas')
@@ -61,9 +55,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     context 'when product contains RE9' do
-      before do
-        product.name = 'RE9 T-Cross Sense Vídeo - Maio22 (Facebook)'
-      end
+      before { product.name = 'RE9 T-Cross Sense Vídeo - Maio22 (Facebook)' }
 
       it 'return source name with RE9' do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - RE9')
@@ -71,9 +63,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     context 'when product contains KINTO' do
-      before do
-        product.name = 'KINTO'
-      end
+      before { product.name = 'KINTO' }
 
       it 'return source name with KINTO' do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - KINTO')
@@ -81,9 +71,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     context 'when product contains FLUA' do
-      before do
-        product.name = 'FLUA'
-      end
+      before { product.name = 'FLUA' }
 
       it 'return source name with FLUA' do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - FLUA')
@@ -91,9 +79,15 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     context 'when product contains Frota' do
-      before do
-        product.name = 'Frota - Vídeo'
+      before { product.name = 'Frota - Vídeo' }
+
+      it 'return source name with FLUA' do
+        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - Frota')
       end
+    end
+
+    context 'when product contains saveiro - cnpj' do
+      before { product.name = 'Saveiro - CNPJ' }
 
       it 'return source name with FLUA' do
         expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - Frota')
