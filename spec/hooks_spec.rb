@@ -1,4 +1,5 @@
 require 'ostruct'
+require 'byebug'
 
 RSpec.describe F1SalesCustom::Hooks::Lead do
   context 'when product cotains information' do
@@ -24,9 +25,11 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       product
     end
 
+    let(:switch_source) { described_class.switch_source(lead) }
+
     context 'when product is common' do
       it 'returns source name' do
-        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen')
+        expect(switch_source).to eq('Facebook - Savol Volkswagen')
       end
     end
 
@@ -34,7 +37,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       before { product.name = 'PcD' }
 
       it 'returns source name' do
-        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - PCD')
+        expect(switch_source).to eq('Facebook - Savol Volkswagen - PCD')
       end
     end
 
@@ -42,7 +45,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       before { product.name = 'Frotista' }
 
       it 'returns source name' do
-        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - Frotista')
+        expect(switch_source).to eq('Facebook - Savol Volkswagen - Frotista')
       end
     end
 
@@ -50,7 +53,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       before { product.name = 'Pós-venda: Pneu - Maio22 (Instagram)' }
 
       it 'returns source name' do
-        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - Pós Vendas')
+        expect(switch_source).to eq('Facebook - Savol Volkswagen - Pós Vendas')
       end
     end
 
@@ -58,7 +61,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       before { product.name = 'RE9 T-Cross Sense Vídeo - Maio22 (Facebook)' }
 
       it 'return source name with RE9' do
-        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - RE9')
+        expect(switch_source).to eq('Facebook - Savol Volkswagen - RE9')
       end
     end
 
@@ -66,7 +69,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       before { product.name = 'KINTO' }
 
       it 'return source name with KINTO' do
-        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - KINTO')
+        expect(switch_source).to eq('Facebook - Savol Volkswagen - KINTO')
       end
     end
 
@@ -74,7 +77,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       before { product.name = 'FLUA' }
 
       it 'return source name with FLUA' do
-        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - FLUA')
+        expect(switch_source).to eq('Facebook - Savol Volkswagen - FLUA')
       end
     end
 
@@ -82,7 +85,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       before { product.name = 'Frota - Vídeo' }
 
       it 'return source name with FLUA' do
-        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - Frota')
+        expect(switch_source).to eq('Facebook - Savol Volkswagen - Frota')
       end
     end
 
@@ -90,7 +93,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       before { product.name = 'Saveiro - CNPJ' }
 
       it 'return source name with FLUA' do
-        expect(described_class.switch_source(lead)).to eq('Facebook - Savol Volkswagen - Frota')
+        expect(switch_source).to eq('Facebook - Savol Volkswagen - Frota')
       end
     end
   end
@@ -111,15 +114,17 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       source
     end
 
+    let(:switch_source) { described_class.switch_source(lead) }
+
     it 'when lead come to SBC' do
-      expect(described_class.switch_source(lead)).to eq('Facebook - SBC')
+      expect(switch_source).to eq('Facebook - SBC')
     end
 
     context 'when leads come to Praia Grande' do
       before { lead.description = 'Campanha Kinto - Praia Grande - Yaris' }
 
       it 'when come to Praia Grande' do
-        expect(described_class.switch_source(lead)).to eq('Facebook - Praia Grande')
+        expect(switch_source).to eq('Facebook - Praia Grande')
       end
     end
 
@@ -127,7 +132,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       before { lead.description = 'Campanha Kinto - Santo André - Yaris' }
 
       it 'when come to Santo André' do
-        expect(described_class.switch_source(lead)).to eq('Facebook - Santo André')
+        expect(switch_source).to eq('Facebook - Santo André')
       end
     end
   end
@@ -148,6 +153,8 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       source
     end
 
+    let(:switch_source) { described_class.switch_source(lead) }
+
     context 'when leads has SA in the message' do
       context 'when store id is savolpraia' do
         before do
@@ -155,7 +162,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
         end
 
         it 'returns nil' do
-          expect(described_class.switch_source(lead)).to be_nil
+          expect(switch_source).to be_nil
         end
       end
 
@@ -165,7 +172,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
         end
 
         it 'goes to Santo André' do
-          expect(described_class.switch_source(lead)).to eq('RD Station - Santo André - Google')
+          expect(switch_source).to eq('RD Station - Santo André - Google')
         end
       end
     end
@@ -179,7 +186,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
         end
 
         it 'goes to Praia Grande' do
-          expect(described_class.switch_source(lead)).to eq('RD Station - Praia Grande - Facebook')
+          expect(switch_source).to eq('RD Station - Praia Grande - Facebook')
         end
       end
 
@@ -189,7 +196,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
         end
 
         it 'returns nil' do
-          expect(described_class.switch_source(lead)).to be_nil
+          expect(switch_source).to be_nil
         end
       end
     end
@@ -203,7 +210,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
         end
 
         it 'returns nil' do
-          expect(described_class.switch_source(lead)).to be_nil
+          expect(switch_source).to be_nil
         end
       end
 
@@ -213,14 +220,14 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
         end
 
         it 'goes to SBC' do
-          expect(described_class.switch_source(lead)).to eq('RD Station - SBC - Instagram')
+          expect(switch_source).to eq('RD Station - SBC - Instagram')
         end
 
         context 'when message does not have origin in source' do
           before { lead.message = 'Tags: . Loja: SBC. Campanha: savol-sbc. Produto: feed-grs-junina. Origem: ' }
 
           it 'source doesnt have origin' do
-            expect(described_class.switch_source(lead)).to eq('RD Station - SBC')
+            expect(switch_source).to eq('RD Station - SBC')
           end
         end
       end
@@ -230,7 +237,40 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
       before { lead.message = '' }
 
       it 'return source name' do
-        expect(described_class.switch_source(lead)).to eq('RD Station')
+        expect(switch_source).to eq('RD Station')
+      end
+    end
+
+    context 'when leads come with Oferta desejada: in message. PG' do
+      before do
+        lead.message = 'Tags: . Oferta desejada: Compra de pneus. Loja: PG'
+        stub_const('ENV', 'STORE_ID' => 'savoltoyotapraia')
+      end
+
+      it 'return POS VENDA in source' do
+        expect(switch_source).to eq('RD Station - Praia Grande - Pós Vendas')
+      end
+    end
+
+    context 'when leads come with Oferta desejada: in message. SBC' do
+      before do
+        lead.message = 'Tags: . Oferta desejada: Compra de pneus. Loja: SBC'
+        stub_const('ENV', 'STORE_ID' => 'savoltoyota')
+      end
+
+      it 'return POS VENDA in source' do
+        expect(switch_source).to eq('RD Station - SBC - Pós Vendas')
+      end
+    end
+
+    context 'when leads come with Oferta desejada: in message. SA' do
+      before do
+        lead.message = 'Tags: . Oferta desejada: Compra de pneus. Loja: SA'
+        stub_const('ENV', 'STORE_ID' => 'savoltoyota')
+      end
+
+      it 'return POS VENDA in source' do
+        expect(switch_source).to eq('RD Station - Santo André - Pós Vendas')
       end
     end
   end
