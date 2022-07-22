@@ -106,8 +106,9 @@ module Savolvw
 
       def rd_station_origin
         origin = @message.colons_to_hash(/(tags|loja|origem|produto|campanha).*?:/, false)['origem']
-        origin_clean = origin&.gsub('.', '')&.capitalize
+        origin_clean = origin&.gsub('.', '')&.capitalize || ''
         @origin_end = origin_clean&.empty? ? '' : " - #{origin_clean}"
+        @origin_end += ' - Pós Vendas' if @message['oferta desejada:']
         choose_the_store
       end
 
