@@ -28,7 +28,7 @@ module Savolvw
       parsed_email = JSON.parse(@email.body.gsub('!@#', '')) rescue nil
 
       if parsed_email.nil?
-        parsed_email = @email.body.colons_to_hash(/(Telefone|Nome|Mensagem|E-mail|CPF|Campanha|Origem|ATENÇÃO).*?:/, false)
+        parsed_email = @email.body.colons_to_hash(/(Telefone|Nome|Modelo|Mensagem|E-mail|CPF|Campanha|Origem|ATENÇÃO).*?:/, false)
         @source_name = parsed_email['origem'] || F1SalesCustom::Email::Source.all[1][:name]
 
         {
@@ -41,7 +41,7 @@ module Savolvw
             email: parsed_email['email']
           },
           product: {
-            name: @email.subject
+            name: parsed_email['modelo']
           },
           message: parsed_email['mensagem'],
           description: parsed_email['campanha']
