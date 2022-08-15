@@ -44,6 +44,47 @@ RSpec.describe F1SalesCustom::Email::Parser do
     end
   end
 
+  context 'when is from website to SavolVW - 0 Km' do
+    let(:email) do
+      email = OpenStruct.new
+      email.to = [email: 'website@savolvw.f1sales.org']
+      email.subject = '0KM Tiguan Allspace'
+      email.body = "Veículo: *Tiguan Allspace*\n\nNome: Lead Teste 2\nE-mail: lead2@teste.com\nCPF: 987.987.663-62\nTelefone: (11) 973829173\nMensagem: Segundo lead teste"
+
+      email
+    end
+
+    let(:parsed_email) { described_class.new(email).parse }
+
+    it 'contains lead website a source name' do
+      expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all[1][:name])
+    end
+
+    it 'contains name' do
+      expect(parsed_email[:customer][:name]).to eq('Lead Teste 2')
+    end
+
+    it 'contains email' do
+      expect(parsed_email[:customer][:email]).to eq('lead2@teste.com')
+    end
+
+    it 'contains phone' do
+      expect(parsed_email[:customer][:phone]).to eq('11973829173')
+    end
+
+    it 'contains message' do
+      expect(parsed_email[:message]).to eq('Segundo lead teste')
+    end
+
+    it 'contains product' do
+      expect(parsed_email[:product][:name]).to eq('Tiguan Allspace')
+    end
+
+    it 'contains description' do
+      expect(parsed_email[:description]).to eq('')
+    end
+  end
+
   context 'when lead come from a Landing Page' do
     context 'when is to SBC' do
       let(:email) do
