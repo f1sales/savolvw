@@ -132,7 +132,7 @@ module Savolvw
       end
 
       def frota_team
-        if @product_name_down['frota'] || @product_name_down['saveiro - cnpj'] || @product_name_down['t-cross - cnpj'] || @product_name_down['taos - cnpj'] || @product_name_down['saveiro robust - cnpj'] || @product_name_down['nivus - taxista']
+        if array_product_name.detect { |prod| @product_name_down.include?(prod) }
           "#{@source_name} - Frota"
         else
           @source_name
@@ -140,7 +140,7 @@ module Savolvw
       end
 
       def array_product_name
-        ['frota', 'saveiro - cnpj']
+        ['frota', 'saveiro - cnpj', 't-cross - cnpj', 'taos - cnpj', 'saveiro robust - cnpj', 'nivus - taxista']
       end
     end
   end
