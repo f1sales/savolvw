@@ -70,26 +70,27 @@ module Savolvw
       def switch_source(lead)
         product_name = lead.product&.name || ''
         @source_name = lead.source&.name || ''
-        @product_name_downcase = product_name.downcase
+        @product_name_down = product_name.downcase
         @description = lead.description&.downcase || ''
         @message = lead.message&.downcase || ''
         add_team_to_source
       end
 
       def add_team_to_source
-        if @source_name.downcase.include?('rd station')
+        source_name_down = @source_name.downcase
+        if source_name_down.include?('rd station')
           rd_station_origin
-        elsif @product_name_downcase['pcd']
+        elsif @product_name_down['pcd']
           "#{@source_name} - PCD"
-        elsif @product_name_downcase['frotista']
+        elsif @product_name_down['frotista']
           "#{@source_name} - Frotista"
-        elsif @product_name_downcase['pós-venda']
+        elsif @product_name_down['pós-venda']
           "#{@source_name} - Pós Vendas"
-        elsif @product_name_downcase['re9']
+        elsif @product_name_down['re9']
           "#{@source_name} - RE9"
-        elsif @product_name_downcase['kinto']
+        elsif @product_name_down['kinto']
           "#{@source_name} - KINTO"
-        elsif @product_name_downcase['flua']
+        elsif @product_name_down['flua']
           "#{@source_name} - FLUA"
         elsif @description['sbc']
           "#{@source_name} - SBC"
@@ -97,8 +98,8 @@ module Savolvw
           "#{@source_name} - Praia Grande"
         elsif @description['santo andré']
           "#{@source_name} - Santo André"
-        elsif @product_name_downcase['frota'] || @product_name_downcase['saveiro - cnpj']
-          "#{@source_name} - Frota"
+        elsif source_name_down['facebook']
+          frota_team
         else
           @source_name
         end
@@ -128,6 +129,18 @@ module Savolvw
         else
           @source_name
         end
+      end
+
+      def frota_team
+        if @product_name_down['frota'] || @product_name_down['saveiro - cnpj'] || @product_name_down['t-cross - cnpj'] || @product_name_down['taos - cnpj'] || @product_name_down['saveiro robust - cnpj'] || @product_name_down['nivus - taxista']
+          "#{@source_name} - Frota"
+        else
+          @source_name
+        end
+      end
+
+      def array_product_name
+        ['frota', 'saveiro - cnpj']
       end
     end
   end
