@@ -124,20 +124,32 @@ module Savolvw
 
       def choose_the_store
         if message.include?('loja: sa')
-          return if ENV['STORE_ID'] != 'savoltoyota'
-
-          "#{@source_name} - Santo André" + @origin_end
+          toyota_sa
         elsif message.include?('loja: pg')
-          return if ENV['STORE_ID'] != 'savoltoyotapraia'
-
-          "#{@source_name} - Praia Grande" + @origin_end
+          toyota_pg
         elsif message.include?('loja: sbc')
-          return if ENV['STORE_ID'] != 'savoltoyota'
-
-          "#{@source_name} - SBC" + @origin_end
+          toyota_sbc
         else
           @source_name
         end
+      end
+
+      def toyota_sa
+        return if ENV['STORE_ID'] != 'savoltoyota'
+
+        "#{@source_name} - Santo André" + @origin_end
+      end
+
+      def toyota_pg
+        return if ENV['STORE_ID'] != 'savoltoyotapraia'
+
+        "#{@source_name} - Praia Grande" + @origin_end
+      end
+
+      def toyota_sbc
+        return if ENV['STORE_ID'] != 'savoltoyota'
+
+        "#{@source_name} - SBC" + @origin_end
       end
 
       def frota_team
