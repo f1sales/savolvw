@@ -2,7 +2,7 @@ require 'ostruct'
 require 'byebug'
 
 RSpec.describe F1SalesCustom::Hooks::Lead do
-  context 'when product cotains information' do
+  context 'when source is from Facebook' do
     let(:source) do
       source = OpenStruct.new
       source.name = 'Facebook - Savol Volkswagen'
@@ -91,6 +91,38 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
 
     context 'when product contains saveiro - cnpj' do
       before { product.name = 'Saveiro - CNPJ' }
+
+      it 'return source name with FLUA' do
+        expect(switch_source).to eq('Facebook - Savol Volkswagen - Frota')
+      end
+    end
+
+    context 'when product contains t-cross - cnpj' do
+      before { product.name = 'T-Cross - CNPJ' }
+
+      it 'return source name with FLUA' do
+        expect(switch_source).to eq('Facebook - Savol Volkswagen - Frota')
+      end
+    end
+
+    context 'when product contains taos - cnpj' do
+      before { product.name = 'Taos - CNPJ' }
+
+      it 'return source name with FLUA' do
+        expect(switch_source).to eq('Facebook - Savol Volkswagen - Frota')
+      end
+    end
+
+    context 'when product contains saveiro robust - cnpj' do
+      before { product.name = 'Saveiro Robust - CNPJ' }
+
+      it 'return source name with FLUA' do
+        expect(switch_source).to eq('Facebook - Savol Volkswagen - Frota')
+      end
+    end
+
+    context 'when product contains nivus - taxista' do
+      before { product.name = 'Nivus - Taxista' }
 
       it 'return source name with FLUA' do
         expect(switch_source).to eq('Facebook - Savol Volkswagen - Frota')
