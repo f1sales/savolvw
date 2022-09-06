@@ -122,5 +122,42 @@ RSpec.describe F1SalesCustom::Email::Parser do
         expect(parsed_email[:product][:name]).to eq('Strada Endurance')
       end
     end
+
+    context 'when is to Praia Grande' do
+      let(:email) do
+        email = OpenStruct.new
+        email.to = [email: 'teste@lojateste.f1sales.net']
+        email.subject = 'Notificação de contato sobre oferta'
+        email.body = "INFORMAÇÕES DE CONTATO\n\n\n\n*Campanha:*\n\nSavol Toyota - Praia Grande - Corolla Cross\n\n*Origem: *\n\nGoogle\n\n\n\n*Nome:*\n\nDonatello Splinter\n\n*E-mail: *\n\ndonatelo.splinter@live.com\n\n*Telefone: *\n\n+5516922301191\n\n\n\nATENÇÃO: Não responda este e-mail. Trata-se de uma mensagem informativa e\nautomática.\n\nAtenciosamente,\n[image: Imagem removida pelo remetente.] <http://www.ange360.com.br/>\n\nNada nesta mensagem tem a intenção de ser uma assinatura eletrônica a menos\nque uma declaração específica do contrário seja incluída.\nConfidencialidade: Esta mensagem é destinada somente à pessoa endereçada.\nPode conter material confidencial e/ou privilegiado. Qualquer revisão,\ntransmissão ou outro uso ou ação tomada por confiança é proibida e pode ser\nilegal. Se você recebeu esta mensagem por engano, entre em contato com o\nremetente e apague-a de seu computador."
+
+        email
+      end
+
+      let(:parsed_email) { described_class.new(email).parse }
+
+      it 'contains name' do
+        expect(parsed_email[:customer][:name]).to eq('Donatello Splinter')
+      end
+
+      it 'contains email' do
+        expect(parsed_email[:customer][:email]).to eq('donatelo.splinter@live.com')
+      end
+
+      it 'contains phone' do
+        expect(parsed_email[:customer][:phone]).to eq('5516922301191')
+      end
+
+      it 'contains source name' do
+        expect(parsed_email[:source][:name]).to eq('Google')
+      end
+
+      it 'contains description' do
+        expect(parsed_email[:description]).to eq('Savol Toyota - Praia Grande - Corolla Cross')
+      end
+
+      it 'contains product name' do
+        expect(parsed_email[:product][:name]).to eq('Corolla Cross')
+      end
+    end
   end
 end

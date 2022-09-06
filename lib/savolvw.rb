@@ -41,7 +41,7 @@ module Savolvw
             email: parsed_email['email']
           },
           product: {
-            name: parsed_email['modelo'] || parsed_email['veculo']
+            name: parsed_email['modelo'] || parsed_email['veculo'] || parsed_email['campanha'].split(' - ').last
           },
           message: parsed_email['mensagem'],
           description: parsed_email['campanha'] || ''
