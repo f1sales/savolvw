@@ -38,7 +38,7 @@ module Savolvw
     end
 
     def regular_expression
-      'Telefone|Nome|Modelo|Mensagem|E-mail|CPF|Campanha|Origem|Veículo|ATENÇÃO'
+      'Telefone|Nome|Modelo|Mensagem|E-mail|Contatos adicionados|CPF|Campanha|Origem|Veículo|ATENÇÃO'
     end
 
     def email_lead
@@ -70,7 +70,7 @@ module Savolvw
     end
 
     def lead_message_email
-      @parsed_email['mensagem']
+      @parsed_email['mensagem']&.split("\n")&.first
     end
 
     def lead_description_email
