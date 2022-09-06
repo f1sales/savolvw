@@ -25,43 +25,92 @@ module Savolvw
 
   class F1SalesCustom::Email::Parser
     def parse
-      parsed_email = JSON.parse(@email.body.gsub('!@#', '')) rescue nil
+      @parsed_email = JSON.parse(@email.body.gsub('!@#', '')) rescue nil
 
-      if parsed_email.nil?
-        parsed_email = @email.body.colons_to_hash(/(Telefone|Nome|Modelo|Mensagem|E-mail|CPF|Campanha|Origem|Veículo|ATENÇÃO).*?:/, false)
-        @source_name = parsed_email['origem'] || F1SalesCustom::Email::Source.all[1][:name]
+      if @parsed_email.nil?
+        @parsed_email = @email.body.colons_to_hash(/(#{regular_expression}).*?:/, false)
+        @source_name = @parsed_email['origem'] || F1SalesCustom::Email::Source.all[1][:name]
 
-        {
-          source: {
-            name: @source_name
-          },
-          customer: {
-            name: parsed_email['nome'],
-            phone: parsed_email['telefone'].gsub(/[^0-9]/, ''),
-            email: parsed_email['email']
-          },
-          product: {
-            name: parsed_email['modelo'] || parsed_email['veculo'] || parsed_email['campanha'].split(' - ').last
-          },
-          message: parsed_email['mensagem'],
-          description: parsed_email['campanha'] || ''
-        }
+        email_lead
       else
-
-        {
-          source: {
-            name: F1SalesCustom::Email::Source.all[0][:name]
-          },
-          customer: {
-            name: parsed_email['Nome'],
-            phone: parsed_email['Telefone'].to_s,
-            email: parsed_email['E-mail']
-          },
-          product: { name: "#{parsed_email['Veículo'].strip} #{parsed_email['Placa']}" },
-          message: parsed_email['Descricao'],
-          description: "Preço #{parsed_email['Preço']}"
-        }
+        json_lead
       end
+    end
+
+    def regular_expression
+      'Telefone|Nome|Modelo|Mensagem|E-mail|CPF|Campanha|Origem|Veículo|ATENÇÃO'
+    end
+
+    def email_lead
+      {
+        source: source_name_email,
+        customer: customer_data_email,
+        product: product_name_email,
+        message: lead_message_email,
+        description: lead_description_email
+      }
+    end
+
+    def source_name_email
+      { name: @source_name }
+    end
+
+    def customer_data_email
+      {
+        name: @parsed_email['nome'],
+        phone: @parsed_email['telefone'].gsub(/[^0-9]/, ''),
+        email: @parsed_email['email']
+      }
+    end
+
+    def product_name_email
+      {
+        name: @parsed_email['modelo'] || @parsed_email['veculo'] || @parsed_email['campanha'].split(' - ').last
+      }
+    end
+
+    def lead_message_email
+      @parsed_email['mensagem']
+    end
+
+    def lead_description_email
+      @parsed_email['campanha'] || ''
+    end
+
+    def json_lead
+      {
+        source: source_name_json,
+        customer: customer_data_json,
+        product: product_name_json,
+        message: lead_message_json,
+        description: lead_description_json
+      }
+    end
+
+    def source_name_json
+      {
+        name: F1SalesCustom::Email::Source.all[0][:name]
+      }
+    end
+
+    def customer_data_json
+      {
+        name: @parsed_email['Nome'],
+        phone: @parsed_email['Telefone'].to_s,
+        email: @parsed_email['E-mail']
+      }
+    end
+
+    def product_name_json
+      { name: "#{@parsed_email['Veículo'].strip} #{@parsed_email['Placa']}" }
+    end
+
+    def lead_message_json
+      @parsed_email['Descricao']
+    end
+
+    def lead_description_json
+      "Preço #{@parsed_email['Preço']}"
     end
   end
 
