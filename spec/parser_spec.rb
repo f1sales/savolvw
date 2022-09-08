@@ -85,6 +85,47 @@ RSpec.describe F1SalesCustom::Email::Parser do
     end
   end
 
+  context 'when is from website to SavolVW - 0 Km or pre owned' do
+    let(:email) do
+      email = OpenStruct.new
+      email.to = [email: 'website@savolvw.f1sales.org']
+      email.subject = '0KM Tiguan Allspace'
+      email.body = "Veículo: Gol Nome: Teste Testonildo\nCPF: 306.872.790-11\nTelefone: 11987005148\nE-mail: teste@teste.com.br\nContatos adicionados: website@savolvw.f1sales.net,\nfabio.teixeira@savol.com.br, Thiago.palomaro@savol.com.br\nVeículo: Gol\nMensagem: Apenas um teste\n\n---\n\nDate: 6 de setembro de 2022\nTime: 11:00\nPage URL: https://savol.com.br/veiculos-0km/gol/\nUser Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\n(KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36\nRemote IP: 177.9.4.141"
+
+      email
+    end
+
+    let(:parsed_email) { described_class.new(email).parse }
+
+    it 'contains lead website a source name' do
+      expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all[1][:name])
+    end
+
+    it 'contains name' do
+      expect(parsed_email[:customer][:name]).to eq('Teste Testonildo')
+    end
+
+    it 'contains email' do
+      expect(parsed_email[:customer][:email]).to eq('teste@teste.com.br')
+    end
+
+    it 'contains phone' do
+      expect(parsed_email[:customer][:phone]).to eq('11987005148')
+    end
+
+    it 'contains message' do
+      expect(parsed_email[:message]).to eq('Apenas um teste')
+    end
+
+    it 'contains product' do
+      expect(parsed_email[:product][:name]).to eq('Gol')
+    end
+
+    it 'contains description' do
+      expect(parsed_email[:description]).to eq('')
+    end
+  end
+
   context 'when lead come from a Landing Page' do
     context 'when is to SBC' do
       let(:email) do
@@ -120,6 +161,43 @@ RSpec.describe F1SalesCustom::Email::Parser do
 
       it 'contains product name' do
         expect(parsed_email[:product][:name]).to eq('Strada Endurance')
+      end
+    end
+
+    context 'when is to Praia Grande' do
+      let(:email) do
+        email = OpenStruct.new
+        email.to = [email: 'teste@lojateste.f1sales.net']
+        email.subject = 'Notificação de contato sobre oferta'
+        email.body = "INFORMAÇÕES DE CONTATO\n\n\n\n*Campanha:*\n\nSavol Toyota - Praia Grande - Corolla Cross\n\n*Origem: *\n\nGoogle\n\n\n\n*Nome:*\n\nDonatello Splinter\n\n*E-mail: *\n\ndonatelo.splinter@live.com\n\n*Telefone: *\n\n+5516922301191\n\n\n\nATENÇÃO: Não responda este e-mail. Trata-se de uma mensagem informativa e\nautomática.\n\nAtenciosamente,\n[image: Imagem removida pelo remetente.] <http://www.ange360.com.br/>\n\nNada nesta mensagem tem a intenção de ser uma assinatura eletrônica a menos\nque uma declaração específica do contrário seja incluída.\nConfidencialidade: Esta mensagem é destinada somente à pessoa endereçada.\nPode conter material confidencial e/ou privilegiado. Qualquer revisão,\ntransmissão ou outro uso ou ação tomada por confiança é proibida e pode ser\nilegal. Se você recebeu esta mensagem por engano, entre em contato com o\nremetente e apague-a de seu computador."
+
+        email
+      end
+
+      let(:parsed_email) { described_class.new(email).parse }
+
+      it 'contains name' do
+        expect(parsed_email[:customer][:name]).to eq('Donatello Splinter')
+      end
+
+      it 'contains email' do
+        expect(parsed_email[:customer][:email]).to eq('donatelo.splinter@live.com')
+      end
+
+      it 'contains phone' do
+        expect(parsed_email[:customer][:phone]).to eq('5516922301191')
+      end
+
+      it 'contains source name' do
+        expect(parsed_email[:source][:name]).to eq('Google')
+      end
+
+      it 'contains description' do
+        expect(parsed_email[:description]).to eq('Savol Toyota - Praia Grande - Corolla Cross')
+      end
+
+      it 'contains product name' do
+        expect(parsed_email[:product][:name]).to eq('Corolla Cross')
       end
     end
   end
