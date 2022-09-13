@@ -4,6 +4,7 @@ require 'f1sales_custom/source'
 require 'f1sales_custom/hooks'
 require 'f1sales_helpers'
 require 'json'
+require 'byebug'
 
 module Savolvw
   class Error < StandardError; end
@@ -29,7 +30,6 @@ module Savolvw
 
       if @parsed_email.nil?
         @parsed_email = @email.body.colons_to_hash(/(#{regular_expression}).*?:/, false)
-        @source_name = @parsed_email['origem'] || F1SalesCustom::Email::Source.all[1][:name]
 
         email_lead
       else
@@ -38,7 +38,7 @@ module Savolvw
     end
 
     def regular_expression
-      'Telefone|Nome|Modelo|Mensagem|E-mail|Contatos adicionados|CPF|Campanha|Origem|Veículo|ATENÇÃO'
+      'Telefone|Nome|Modelo|Mensagem|E-mail|Contatos adicionados|CPF|Campanha|Origem|Veículo|ATENÇÃO|Page URL'
     end
 
     def email_lead
@@ -52,7 +52,15 @@ module Savolvw
     end
 
     def source_name_email
-      { name: @source_name }
+      { name: @parsed_email['origem'] || website_or_website_new }
+    end
+
+    def website_or_website_new
+      if @parsed_email['page_url'].to_s['seminovos']
+        F1SalesCustom::Email::Source.all[0][:name]
+      else
+        F1SalesCustom::Email::Source.all[1][:name]
+      end
     end
 
     def customer_data_email
@@ -65,7 +73,7 @@ module Savolvw
 
     def product_name_email
       {
-        name: @parsed_email['modelo'] || @parsed_email['veculo'] || @parsed_email['campanha'].split(' - ').last
+        name: @parsed_email['modelo'] || @parsed_email['veculo'] || @parsed_email['campanha']&.split(' - ')&.last || ''
       }
     end
 

@@ -85,7 +85,7 @@ RSpec.describe F1SalesCustom::Email::Parser do
     end
   end
 
-  context 'when is from website to SavolVW - 0 Km or pre owned' do
+  context 'when is from website to SavolVW - 0 Km' do
     let(:email) do
       email = OpenStruct.new
       email.to = [email: 'website@savolvw.f1sales.org']
@@ -123,6 +123,43 @@ RSpec.describe F1SalesCustom::Email::Parser do
 
     it 'contains description' do
       expect(parsed_email[:description]).to eq('')
+    end
+  end
+
+  context 'when is from website to SavolVW - pre owned' do
+    let(:email) do
+      email = OpenStruct.new
+      email.to = [email: 'teste@lojateste.f1sales.net']
+      email.subject = 'Notificação de contato sobre oferta'
+      email.body = "Dados do cliente:\nNome: Cynthia \nTelefone: 43996611476 \nE-mail: cynthia@teste.com \nMensagem: TESTE F1 \nemail2: marcelo.santos@savol.com.br, fabiana.oliveira@savol.com.br, website@savolvw.f1sales.net \n\n--- \n\nDate: 12 de setembro de 2022 \nTime: 17:20 \nPage URL: https://savol.com.br/seminovos/volkswagen-spacecross-2/ \nUser Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 "
+
+      email
+    end
+
+    let(:parsed_email) { described_class.new(email).parse }
+
+    it 'contains name' do
+      expect(parsed_email[:customer][:name]).to eq('Cynthia')
+    end
+
+    it 'contains email' do
+      expect(parsed_email[:customer][:email]).to eq('cynthia@teste.com')
+    end
+
+    it 'contains phone' do
+      expect(parsed_email[:customer][:phone]).to eq('43996611476')
+    end
+
+    it 'contains source name' do
+      expect(parsed_email[:source][:name]).to eq('Website')
+    end
+
+    it 'contains description' do
+      expect(parsed_email[:description]).to eq('')
+    end
+
+    it 'contains product name' do
+      expect(parsed_email[:product][:name]).to eq('')
     end
   end
 
