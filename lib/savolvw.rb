@@ -211,13 +211,15 @@ module Savolvw
       def frota_team
         if array_product_name.detect { |prod| product_name_down.include?(prod) }
           "#{@source_name} - Frota"
+        elsif product_name_down['cnpj']
+          "#{@source_name} - Frota"
         else
           @source_name
         end
       end
 
       def array_product_name
-        ['frota', 'saveiro - cnpj', 't-cross - cnpj', 'taos - cnpj', 'saveiro robust - cnpj', 'nivus - taxista']
+        ['frota', 'nivus - taxista']
       end
     end
   end
